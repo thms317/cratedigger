@@ -21,12 +21,14 @@ python src/cratedigger/spotify.py "https://open.spotify.com/playlist/37i9dQZEVXc
 ## Prerequisites
 
 ### Required Software
+
 - **Python 3.12+**
 - **uv package manager** (installed via `make setup`)
 - **ffmpeg** for audio conversion
 - **Valid Spotify account**
 
 ### Install ffmpeg
+
 ```bash
 # macOS (using Homebrew)
 brew install ffmpeg
@@ -41,6 +43,7 @@ choco install ffmpeg
 ## Setup Instructions
 
 ### 1. Project Setup
+
 ```bash
 # Clone and setup the project
 git clone <repository-url>
@@ -49,22 +52,41 @@ make setup
 ```
 
 ### 2. Spotify Credentials
-Generate Spotify credentials using librespot-auth:
+
+Generate Spotify credentials using librespot-auth. This is a **Rust project** that creates a virtual Spotify speaker to capture your authentication token.
+
+#### Prerequisites
+
+- **Rust toolchain**: Install via [rustup](https://rustup.rs/) if not already installed:
+  ```bash
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  ```
+
+#### Generate Credentials
 
 ```bash
-# Clone the authentication tool
+# Clone the authentication tool (from project root)
 git clone https://github.com/dspearson/librespot-auth.git
 cd librespot-auth
 
-# Install dependencies and generate credentials
-uv pip install -r requirements.txt
-python librespot_auth.py
+# Build the Rust project
+cargo build --release
 
-# Follow the prompts to enter your Spotify username and password
-# This will generate a credentials.json file
+# Run librespot-auth (creates a virtual Spotify speaker)
+cargo run --release
 ```
 
-Copy the generated credentials to the correct location:
+#### Connect from Spotify
+
+1. Open **Spotify** on your phone or computer
+2. Play any song
+3. Click the **"Devices Available"** icon (speaker icon)
+4. Select **"Speaker"** (the librespot-auth virtual device)
+5. Wait for the terminal to show: `Credentials saved: credentials.json`
+6. Press `Ctrl+C` to stop librespot-auth
+
+#### Copy Credentials to Zotify
+
 ```bash
 # macOS
 mkdir -p ~/Library/Application\ Support/Zotify/
@@ -115,26 +137,33 @@ python src/cratedigger/spotify.py "https://open.spotify.com/playlist/PLAYLIST_ID
 ### Download Formats
 
 **Direct MP3 (Default)**
+
 ```bash
 python src/cratedigger/spotify.py "https://open.spotify.com/album/ALBUM_ID"
 ```
+
 Downloads directly as MP3 using Zotify's built-in conversion.
 
 **Two-Step Process (OGG → MP3)**
+
 ```bash
 python src/cratedigger/spotify.py "https://open.spotify.com/album/ALBUM_ID" --use-ogg
 ```
+
 Downloads as OGG first, then converts to MP3 for maximum compatibility.
 
 **OGG Only**
+
 ```bash
 python src/cratedigger/spotify.py "https://open.spotify.com/album/ALBUM_ID" --keep-ogg
 ```
+
 Downloads as OGG format only, no MP3 conversion.
 
 ### File Organization
 
 **Nested Structure (Default)**
+
 ```
 extracted/noah_v2/
 ├── Artist Name/
@@ -147,9 +176,11 @@ extracted/noah_v2/
 ```
 
 **Flat Structure**
+
 ```bash
 python src/cratedigger/spotify.py "SPOTIFY_URL" --flat-structure
 ```
+
 ```
 extracted/noah_v2/
 ├── Artist - Track Name.mp3
@@ -161,6 +192,7 @@ extracted/noah_v2/
 ## Practical Examples
 
 ### Download a Complete Album
+
 ```bash
 # Download The Beatles - Abbey Road
 python src/cratedigger/spotify.py "https://open.spotify.com/album/0ETFjACtuP2ADo6LFhL6HN" \
@@ -169,6 +201,7 @@ python src/cratedigger/spotify.py "https://open.spotify.com/album/0ETFjACtuP2ADo
 ```
 
 ### Download Multiple Playlists with Rate Limiting
+
 ```bash
 # For large playlists, use longer wait times to avoid rate limits
 python src/cratedigger/spotify.py "https://open.spotify.com/playlist/37i9dQZEVXcQ9COmYvdajy" \
@@ -177,6 +210,7 @@ python src/cratedigger/spotify.py "https://open.spotify.com/playlist/37i9dQZEVXc
 ```
 
 ### Convert Existing Files Only
+
 ```bash
 # If you have OGG files that need conversion to MP3
 python src/cratedigger/spotify.py "dummy_url" \
@@ -185,6 +219,7 @@ python src/cratedigger/spotify.py "dummy_url" \
 ```
 
 ### Create a Music Library
+
 ```bash
 # Keep files in Zotify's location AND copy to target
 python src/cratedigger/spotify.py "https://open.spotify.com/album/ALBUM_ID" \
@@ -223,11 +258,13 @@ Download successful. Processing...
 ## Rate Limiting and Best Practices
 
 ### Avoiding Rate Limits
+
 - Use `--wait-time 45` or higher for large downloads
 - Take breaks between large playlist downloads
 - Avoid downloading too many items in quick succession
 
 ### Recommended Settings
+
 ```bash
 # For albums (10-15 tracks)
 -w 30
@@ -244,12 +281,14 @@ Download successful. Processing...
 ### Common Issues
 
 **"Audio key error" or Rate Limiting**
+
 ```bash
 # Increase wait time and try again
 python src/cratedigger/spotify.py "SPOTIFY_URL" -w 90
 ```
 
 **Authentication Errors**
+
 ```bash
 # Regenerate credentials
 cd librespot-auth
@@ -258,6 +297,7 @@ python librespot_auth.py
 ```
 
 **ffmpeg Not Found**
+
 ```bash
 # Install ffmpeg
 brew install ffmpeg  # macOS
@@ -265,6 +305,7 @@ sudo apt install ffmpeg  # Linux
 ```
 
 **No Files Downloaded**
+
 - Check that the Spotify URL is valid and accessible
 - Verify Zotify credentials are properly configured
 - Ensure you have an active Spotify subscription
@@ -272,6 +313,7 @@ sudo apt install ffmpeg  # Linux
 ### Debug Information
 
 Enable detailed output:
+
 ```bash
 python src/cratedigger/spotify.py "SPOTIFY_URL" --show-lyrics-errors
 ```
@@ -279,6 +321,7 @@ python src/cratedigger/spotify.py "SPOTIFY_URL" --show-lyrics-errors
 ## File Locations
 
 ### Default Directories
+
 - **Zotify Default**: `~/Music/Zotify Music/`
 - **Tool Default**: `extracted/noah_v2/`
 - **Credentials**:
@@ -287,6 +330,7 @@ python src/cratedigger/spotify.py "SPOTIFY_URL" --show-lyrics-errors
   - Windows: `%APPDATA%\Zotify\credentials.json`
 
 ### Supported Formats
+
 - **Input**: Spotify URLs (tracks, albums, playlists)
 - **Output**: MP3 (default), OGG (optional)
 - **Cover Art**: JPG, PNG
@@ -294,6 +338,7 @@ python src/cratedigger/spotify.py "SPOTIFY_URL" --show-lyrics-errors
 ## Advanced Usage
 
 ### Batch Processing
+
 ```bash
 # Create a script for multiple downloads
 #!/bin/bash
@@ -310,6 +355,7 @@ done
 ```
 
 ### Integration with Other Tools
+
 ```bash
 # Convert to other formats after download
 find extracted/noah_v2 -name "*.mp3" -exec ffmpeg -i {} -c:a flac {}.flac \;
@@ -319,3 +365,7 @@ find extracted/noah_v2 -name "*.mp3" -exec ffmpeg -i {} -c:a flac {}.flac \;
 ```
 
 This tool provides a robust solution for downloading and organizing music from Spotify while respecting rate limits and providing excellent user feedback throughout the process.
+
+### History
+
+python src/cratedigger/spotify.py "https://open.spotify.com/playlist/3ERtFAhfygcqe9WqhflYFo?si=fbfc37dede4e43bf"
