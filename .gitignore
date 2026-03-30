@@ -192,3 +192,4 @@ scratch/**
 
 # Ignore mp3 downloads
 extracted/
+librespot-auth/
