@@ -9,6 +9,7 @@ readme = "README.md"
 requires-python = ">=3.12,<4.0"
 dependencies = [
     "bs4>=0.0.2",
+    "certifi>=2026.10.19",  # emSign CA compromise, Oct 2026
     "requests>=2.33.1",
     "tqdm>=4.67.1",
     "types-requests>=2.33.0.20260408",
@@ -29,6 +30,7 @@ dev = [
 ]
 
 [tool.uv]
+required-version = ">=0.13.4"  # emSign CA compromise, Oct 2026
 package = true
 
 [tool.uv.sources]
