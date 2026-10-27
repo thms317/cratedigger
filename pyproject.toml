@@ -9,6 +9,7 @@ readme = "README.md"
 requires-python = ">=3.12,<4.0"
 dependencies = [
     "bs4>=0.0.2",
+    "certifi>=2026.10.19",  # emSign CA compromise, Oct 2026
     "requests>=2.33.1",
     "tqdm>=4.67.1",
     "types-requests>=2.33.0.20260408",
@@ -29,6 +30,7 @@ dev = [
 ]
 
 [tool.uv]
+required-version = ">=0.13.4"  # emSign CA compromise, Oct 2026
 package = true
 
 [tool.uv.sources]
@@ -58,7 +60,8 @@ ignore = [
     "N812",     # "Lowercase `functions` imported as non-lowercase." Pretty standard for spark programming.
     "T201",     # "`print` found."
     "BLE001",   # Do not catch blind exception: `Exception`
-    "PD901",    # Avoid using the generic variable name `df` for DataFrames
+    "CPY001",   # "Missing copyright notice at top of file." Stable since ruff 0.17.
+    "PLR0917",  # "Too many positional arguments." Stable since ruff 0.17.
     "PLR2004",  # "Magic value used in comparison, consider replacing with a constant variable."
     "TRY003",   #  Avoid specifying long messages outside the exception class
     "S311",     # "Standard pseudo-random generators are not suitable for cryptographic purposes
